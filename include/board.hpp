@@ -6,7 +6,6 @@ typedef struct _Board Board;
 class Display {
     public:
         Display(void);
-        ~Display(void);
 
         void make_board(void);
         void cleanup(void);

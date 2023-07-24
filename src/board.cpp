@@ -32,10 +32,6 @@ Display::Display(void) {
     curs_set(0);
 }
 
-Display::~Display(void) {
-    delete this->board;
-}
-
 // Instance methods
 void Display::make_board(void) {
     this->board = new Board;
@@ -62,6 +58,7 @@ void Display::make_window(size_t maxY, size_t maxX) {
 
 void Display::cleanup(void) {
     endwin();
+    delete this->board;
 }
 
 void Display::wait_input(void) {

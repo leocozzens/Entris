@@ -11,18 +11,15 @@
 #define EXIT_FAILURE 1
 
 int main(void) {
-    Display *screen = new Display;
-    screen->make_board();
-    if(screen->win_fail()) {
-        screen->cleanup();
-        std::cerr << screen->get_err() << std::endl;
-        delete screen;
+    Display screen;
+    screen.make_board();
+    if(screen.win_fail()) {
+        screen.cleanup();
+        std::cerr << screen.get_err() << std::endl;
         return EXIT_FAILURE;
     }
+    screen.wait_input();
 
-    screen->wait_input();
-
-    screen->cleanup();
-    delete screen;
+    screen.cleanup();
     return EXIT_SUCCESS;
 }
