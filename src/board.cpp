@@ -5,7 +5,7 @@
 // Local headers
 #include <board.hpp>
 
-#define WIN_FAIL "Failed to initialize board window"
+#define WIN_FAIL "Terminal size too small"
 #define SUCCESS "No error"
 
 #define BOARD_SCALE 20
@@ -68,6 +68,7 @@ void Display::wait_input(void) {
     wgetch(this->board->win);
 }
 
+// Getters
 bool Display::win_fail(void) {
     return !this->open;
 }
