@@ -13,6 +13,8 @@
 #define WIDTH_FACTOR 1.4
 #define SET_BORDER(_Window) box((_Window), 0, 0)
 
+#define EMPTY_SPACE " "
+
 struct _Board {
     WINDOW *win;
     size_t height;
@@ -61,15 +63,22 @@ void Display::make_board(void) {
 void Display::make_window(size_t maxY, size_t maxX) {
     this->board->win = newwin(this->board->height, this->board->width, (maxY - this->board->height)/2, (maxX - this->board->width)/2);
     keypad(this->board->win, 1);
+    wrefresh(this->board->win);
 }
 
 void Display::wait_input(void) {
     wgetch(this->board->win);
 }
 
-void Display::draw_entity(Entity *entActive) {
+void Display::draw_entity(Entity *entActive) { // TODO: Switch on color identifiers with a default to print the specified char
     for(uint16_t i = 0; i < entActive->size; i++) {
         mvwprintw(this->board->win, entActive->pieces[i].y, entActive->pieces[i].x, &entActive->body);
+    }
+}
+
+void Display::clear_entity(Entity *entActive) {
+    for(uint16_t i = 0; i < entActive->size; i++) {
+       mvwprintw(this->board->win, entActive->pieces[i].y, entActive->pieces[i].x, EMPTY_SPACE);
     }
 }
 

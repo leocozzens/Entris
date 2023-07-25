@@ -8,7 +8,7 @@
 // Constructor/Destructor
 GameController::GameController(void) {
     this->screen = new Display;
-    screen->make_board();
+    this->screen->make_board();
     if(screen->win_fail()) {
         const char* err = screen->get_err();
         this->cleanup();
@@ -17,6 +17,7 @@ GameController::GameController(void) {
     }
     else {
         this->entMan = new EntityManager(screen->get_center_x());
+        this->screen->draw_entity(entMan->get_current_entity());
         this->running = true; 
     }
 }
@@ -33,10 +34,13 @@ void GameController::cleanup(void) {
 }
 
 void GameController::play_round(void) {
-    screen->draw_entity(entMan->get_current_entity());
-    screen->wait_input();
-    this->cleanup();
-    end_with_code(EXIT_SUCCESS);
+    this->screen->wait_input();
+    this->screen->clear_entity(entMan->get_current_entity());
+    this->entMan->step_down();
+    this->screen->draw_entity(entMan->get_current_entity());
+    
+    // this->cleanup();
+    // end_with_code(EXIT_SUCCESS);
 }
 
 // Getters

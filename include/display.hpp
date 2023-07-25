@@ -13,6 +13,7 @@ class Display {
         void make_board(void);
         void wait_input(void);
         void draw_entity(Entity *entActive);
+        void clear_entity(Entity *entActive);
 
         // Getters
         bool win_fail(void);

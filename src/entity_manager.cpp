@@ -3,6 +3,7 @@
 #include <entity_manager.hpp>
 
 #define PIECE_SIZE 4
+#define PIECE_ICON '#'
 #define STARTY 1
 
 #define LAST_INDEX(_Size) (_Size - 1)
@@ -25,6 +26,10 @@ EntityManager::EntityManager(size_t screenCenter) {
 }
 
 // Instance methods
+void EntityManager::step_down(void) {
+    for(uint16_t i = 0; i < this->currentEnt->size; i++) this->currentEnt->pieces[i].y++;
+}
+
 void EntityManager::init_entities(void) {
     uint16_t size;
     char body;
@@ -39,7 +44,7 @@ void EntityManager::init_entities(void) {
 
 void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
     size = PIECE_SIZE;
-    body = '#';
+    body = PIECE_ICON;
     *offSets = new Coord[size];
 
     std::uniform_int_distribution<uint16_t> uniqueDist(0, UNIQUE_PIECES - 1);
@@ -58,9 +63,9 @@ void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
             break;
         case O_PIECE:
             for(uint16_t i = 0, index = 0; i < 2; i++) {
-                for(uint16_t j = 0; j < (size/2); j++) {
+                for(uint16_t j = 0; j < (size/2); j++, index++) {
                     (*offSets)[index].y = i;
-                    (*offSets)[index++].x = j;
+                    (*offSets)[index].x = j;
                 }
             }
             break;

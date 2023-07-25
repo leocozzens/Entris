@@ -10,6 +10,7 @@ typedef struct _Coord Coord;
 class EntityManager {
     public:
         EntityManager(size_t screenCenter);
+        void step_down(void);
 
         // Getters
         Entity *get_current_entity(void);
