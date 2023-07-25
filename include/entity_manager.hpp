@@ -16,13 +16,13 @@ class EntityManager {
         Entity *get_current_entity(void);
 
     private:
+        static std::random_device randGen;
         size_t screenCenter;
         Entity *currentEnt;
-        std::random_device randGen;
 
+        static void random_piece(uint16_t &size, char &body, Coord **offSets);
         void init_entities(void);
         Entity *make_entity(uint16_t size, char body, Coord **offSets, size_t startY, size_t startX);
-        void random_piece(uint16_t &size, char &body, Coord **offSets);
 };
 
 #endif

@@ -8,6 +8,7 @@
 
 #define LAST_INDEX(_Size) (_Size - 1)
 
+// Declarations
 typedef enum {
     I_PIECE,
     J_PIECE,
@@ -19,36 +20,22 @@ typedef enum {
     UNIQUE_PIECES
 } PieceType;
 
+std::random_device EntityManager::randGen;
+
 // Constructor/Destructor
 EntityManager::EntityManager(size_t screenCenter) {
     this->screenCenter = screenCenter;
     init_entities();
 }
 
-// Instance methods
-void EntityManager::step_down(void) {
-    for(uint16_t i = 0; i < this->currentEnt->size; i++) this->currentEnt->pieces[i].y++;
-}
-
-void EntityManager::init_entities(void) {
-    uint16_t size;
-    char body;
-    Coord *offSets = nullptr;
-
-    random_piece(size, body, &offSets);
-    this->currentEnt = make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
-    random_piece(size, body, &offSets);
-    this->currentEnt->nextEnt = make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
-    this->currentEnt->nextEnt->nextEnt = nullptr;
-}
-
+// Static methods
 void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
     size = PIECE_SIZE;
     body = PIECE_ICON;
     *offSets = new Coord[size];
 
     std::uniform_int_distribution<uint16_t> uniqueDist(0, UNIQUE_PIECES - 1);
-    switch(uniqueDist(this->randGen)) {
+    switch(uniqueDist(randGen)) {
         case I_PIECE:
             for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 0, i };
             break;
@@ -89,6 +76,23 @@ void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
             }
             break;
     }
+}
+
+// Instance methods
+void EntityManager::step_down(void) {
+    for(uint16_t i = 0; i < this->currentEnt->size; i++) this->currentEnt->pieces[i].y++;
+}
+
+void EntityManager::init_entities(void) {
+    uint16_t size;
+    char body;
+    Coord *offSets = nullptr;
+
+    random_piece(size, body, &offSets);
+    this->currentEnt = this->make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
+    random_piece(size, body, &offSets);
+    this->currentEnt->nextEnt = this->make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
+    this->currentEnt->nextEnt->nextEnt = nullptr;
 }
 
 Entity *EntityManager::make_entity(uint16_t size, char body, Coord **offSets, size_t startY, size_t startX) {

@@ -38,7 +38,7 @@ void GameController::play_round(void) {
     this->screen->clear_entity(entMan->get_current_entity());
     this->entMan->step_down();
     this->screen->draw_entity(entMan->get_current_entity());
-    
+
     // this->cleanup();
     // end_with_code(EXIT_SUCCESS);
 }
