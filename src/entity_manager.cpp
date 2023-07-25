@@ -3,8 +3,7 @@
 #include <entity_manager.hpp>
 
 #define PIECE_SIZE 4
-#define STARTY 0
-#define STARTX 10
+#define STARTY 1
 
 #define LAST_INDEX(_Size) (_Size - 1)
 
@@ -20,19 +19,24 @@ typedef enum {
 } PieceType;
 
 // Constructor/Destructor
-EntityManager::EntityManager(void) {
+EntityManager::EntityManager(size_t screenCenter) {
+    this->screenCenter = screenCenter;
+    init_entities();
+}
+
+// Instance methods
+void EntityManager::init_entities(void) {
     uint16_t size;
     char body;
     Coord *offSets = nullptr;
 
     random_piece(size, body, &offSets);
-    this->currentEnt = make_entity(size, body, &offSets);
+    this->currentEnt = make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
     random_piece(size, body, &offSets);
-    this->currentEnt->nextEnt = make_entity(size, body, &offSets);
+    this->currentEnt->nextEnt = make_entity(size, body, &offSets, STARTY, this->screenCenter - ((offSets[LAST_INDEX(size)].x + 1) / 2));
     this->currentEnt->nextEnt->nextEnt = nullptr;
 }
 
-// Instance methods
 void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
     size = PIECE_SIZE;
     body = '#';
@@ -41,7 +45,7 @@ void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
     std::uniform_int_distribution<uint16_t> uniqueDist(0, UNIQUE_PIECES - 1);
     switch(uniqueDist(this->randGen)) {
         case I_PIECE:
-            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i };
+            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 0, i };
             break;
         case J_PIECE:
             (*offSets)[0] = { 0, 0 };
@@ -69,7 +73,7 @@ void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
             }
             break;
         case T_PIECE:
-            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i }; // TODO: Fix this piece
+            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 0, i }; // TODO: Fix this piece
             break;
         case Z_PIECE:
             for(uint16_t i = 0, index = 0; i < 2; i++) { // TODO: Fix this piece
@@ -82,14 +86,14 @@ void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
     }
 }
 
-Entity *EntityManager::make_entity(uint16_t size, char body, Coord **offSets) {
+Entity *EntityManager::make_entity(uint16_t size, char body, Coord **offSets, size_t startY, size_t startX) {
     Entity *freshEnt = new Entity;
     freshEnt->size = size;
     freshEnt->body = body;
     freshEnt->pieces = *offSets;
     for(uint16_t i = 0; i < size; i++) {
-        freshEnt->pieces[i].y += STARTY;
-        freshEnt->pieces[i].x += STARTX;
+        freshEnt->pieces[i].y += startY;
+        freshEnt->pieces[i].x += startX;
     }
     *offSets = nullptr;
     return freshEnt;

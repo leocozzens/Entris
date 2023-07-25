@@ -17,6 +17,7 @@ class Display {
         // Getters
         bool win_fail(void);
         const char *get_err(void);
+        size_t get_center_x(void);
     private:
         bool open;
         const char *err;

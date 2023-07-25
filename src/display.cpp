@@ -9,7 +9,8 @@
 #define WIN_FAIL "Terminal size too small"
 #define SUCCESS "No error"
 
-#define BOARD_SCALE 16
+#define BOARD_SCALE 19
+#define WIDTH_FACTOR 1.4
 #define SET_BORDER(_Window) box((_Window), 0, 0)
 
 struct _Board {
@@ -42,7 +43,7 @@ Display::~Display(void) {
 void Display::make_board(void) {
     this->board = new Board;
     this->board->height = BOARD_SCALE;
-    this->board->width = this->board->height * 1.5;
+    this->board->width = this->board->height * WIDTH_FACTOR;
     size_t maxY, maxX;
     getmaxyx(stdscr, maxY, maxX);
     if(this->board->height > maxY || this->board->width > maxX) {
@@ -79,6 +80,10 @@ bool Display::win_fail(void) {
 
 const char *Display::get_err(void) {
     return this->err;
+}
+
+size_t Display::get_center_x(void) {
+    return this->board->width/2;
 }
 
 

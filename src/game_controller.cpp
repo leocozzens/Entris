@@ -16,7 +16,7 @@ GameController::GameController(void) {
         this->end_with_code(EXIT_FAILURE);
     }
     else {
-        this->entMan = new EntityManager;
+        this->entMan = new EntityManager(screen->get_center_x());
         this->running = true; 
     }
 }
