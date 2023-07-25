@@ -11,6 +11,7 @@ class EntityManager {
     public:
         EntityManager(void);
 
+        // Getters
         Entity *get_current_entity(void);
 
     private:
@@ -18,7 +19,7 @@ class EntityManager {
         std::random_device randGen;
 
         Entity *make_entity(uint16_t size, char body, Coord **offSets);
-        void get_random_piece(uint16_t &size, char &body, Coord **offSets);
+        void random_piece(uint16_t &size, char &body, Coord **offSets);
 };
 
 #endif

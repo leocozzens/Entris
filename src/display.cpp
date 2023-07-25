@@ -9,7 +9,7 @@
 #define WIN_FAIL "Terminal size too small"
 #define SUCCESS "No error"
 
-#define BOARD_SCALE 20
+#define BOARD_SCALE 16
 #define SET_BORDER(_Window) box((_Window), 0, 0)
 
 struct _Board {
@@ -64,6 +64,12 @@ void Display::make_window(size_t maxY, size_t maxX) {
 
 void Display::wait_input(void) {
     wgetch(this->board->win);
+}
+
+void Display::draw_entity(Entity *entActive) {
+    for(uint16_t i = 0; i < entActive->size; i++) {
+        mvwprintw(this->board->win, entActive->pieces[i].y, entActive->pieces[i].x, &entActive->body);
+    }
 }
 
 // Getters

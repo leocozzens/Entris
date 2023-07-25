@@ -7,13 +7,18 @@ class EntityManager;
 class GameController {
     public:
         GameController(void);
+        void end_with_code(int code);
         void cleanup(void);
-        bool play_round(void);
+        void play_round(void);
 
+        // Getters
+        bool is_running(void);
+        int get_exit_state(void);
     private:
         bool running;
+        int exitState;
         Display *screen;
-        EntityManager *enMan;
+        EntityManager *entMan;
 };
 
 #endif

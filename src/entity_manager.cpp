@@ -6,6 +6,8 @@
 #define STARTY 0
 #define STARTX 10
 
+#define LAST_INDEX(_Size) (_Size - 1)
+
 typedef enum {
     I_PIECE,
     J_PIECE,
@@ -23,51 +25,58 @@ EntityManager::EntityManager(void) {
     char body;
     Coord *offSets = nullptr;
 
-    get_random_piece(size, body, &offSets);
+    random_piece(size, body, &offSets);
     this->currentEnt = make_entity(size, body, &offSets);
-    get_random_piece(size, body, &offSets);
+    random_piece(size, body, &offSets);
     this->currentEnt->nextEnt = make_entity(size, body, &offSets);
     this->currentEnt->nextEnt->nextEnt = nullptr;
 }
 
 // Instance methods
-void EntityManager::get_random_piece(uint16_t &size, char &body, Coord **offSets) {
-    size = PIECE_SIZE; // Size must always be even
+void EntityManager::random_piece(uint16_t &size, char &body, Coord **offSets) {
+    size = PIECE_SIZE;
     body = '#';
     *offSets = new Coord[size];
 
     std::uniform_int_distribution<uint16_t> uniqueDist(0, UNIQUE_PIECES - 1);
     switch(uniqueDist(this->randGen)) {
         case I_PIECE:
-            for(uint16_t i = 0; i <= size; i++) (*offSets)[i] = { 1, i };
+            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i };
             break;
         case J_PIECE:
             (*offSets)[0] = { 0, 0 };
-            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i };
+            for(uint16_t i = 0; i < LAST_INDEX(size); i++) (*offSets)[i + 1] = { 1, i };
             break;
         case L_PIECE:
-            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i };
-            (*offSets)[size].y = 0;
-            (*offSets)[size].x = size - 1;
+            for(uint16_t i = 0; i < LAST_INDEX(size); i++) (*offSets)[i] = { 1, i };
+            (*offSets)[LAST_INDEX(size)].y = 0;
+            (*offSets)[LAST_INDEX(size)].x = LAST_INDEX(size) - 1;
             break;
         case O_PIECE:
-            for(uint16_t i = 0; i < 2; i++) {
-                for(uint16_t j = 0; j < (size/2); j++) (*offSets)[j] = { i, j };
+            for(uint16_t i = 0, index = 0; i < 2; i++) {
+                for(uint16_t j = 0; j < (size/2); j++) {
+                    (*offSets)[index].y = i;
+                    (*offSets)[index++].x = j;
+                }
             }
             break;
         case S_PIECE:
-            for(uint16_t i = 0; i < 2; i++) { // TODO: Fix this piece
-                for(uint16_t j = 0; j < (size/2); j++) (*offSets)[j] = { i, j };
+            for(uint16_t i = 0, index = 0; i < 2; i++) { // TODO: Fix this piece
+                for(uint16_t j = 0; j < (size/2); j++) {
+                    (*offSets)[index].y = i;
+                    (*offSets)[index++].x = j;
+                }
             }
             break;
         case T_PIECE:
-            for(uint16_t i = 0; i < 2; i++) { // TODO: Fix this piece
-                for(uint16_t j = 0; j < (size/2); j++) (*offSets)[j] = { i, j };
-            }
+            for(uint16_t i = 0; i < size; i++) (*offSets)[i] = { 1, i }; // TODO: Fix this piece
             break;
         case Z_PIECE:
-            for(uint16_t i = 0; i < 2; i++) { // TODO: Fix this piece
-                for(uint16_t j = 0; j < (size/2); j++) (*offSets)[j] = { i, j };
+            for(uint16_t i = 0, index = 0; i < 2; i++) { // TODO: Fix this piece
+                for(uint16_t j = 0; j < (size/2); j++) {
+                    (*offSets)[index].y = i;
+                    (*offSets)[index++].x = j;
+                }
             }
             break;
     }
