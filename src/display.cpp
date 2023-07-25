@@ -3,7 +3,8 @@
 // External libraries
 #include <ncurses.h>
 // Local headers
-#include <board.hpp>
+#include <display.hpp>
+#include <entity.hpp>
 
 #define WIN_FAIL "Terminal size too small"
 #define SUCCESS "No error"
@@ -32,16 +33,21 @@ Display::Display(void) {
     curs_set(0);
 }
 
+Display::~Display(void) {
+    endwin();
+    delete this->board;
+}
+
 // Instance methods
 void Display::make_board(void) {
     this->board = new Board;
     this->board->height = BOARD_SCALE;
-    this->board->width = this->board->height * 2.5;
+    this->board->width = this->board->height * 1.5;
     size_t maxY, maxX;
     getmaxyx(stdscr, maxY, maxX);
     if(this->board->height > maxY || this->board->width > maxX) {
         this->open = false;
-        this->err = WIN_FAIL;
+        this->err = WIN_FAIL; // Required to be a literal
     }
     else {
         this->open = true;
@@ -54,11 +60,6 @@ void Display::make_board(void) {
 void Display::make_window(size_t maxY, size_t maxX) {
     this->board->win = newwin(this->board->height, this->board->width, (maxY - this->board->height)/2, (maxX - this->board->width)/2);
     keypad(this->board->win, 1);
-}
-
-void Display::cleanup(void) {
-    endwin();
-    delete this->board;
 }
 
 void Display::wait_input(void) {
