@@ -1,6 +1,8 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#define TURN_DURATION_MS 500
+
 class EntityManager;
 typedef struct _Board Board;
 typedef struct _Entity Entity;
@@ -11,7 +13,7 @@ class Display {
         ~Display(void);
 
         void make_board(void);
-        void wait_input(void);
+        std::chrono::time_point<std::chrono::steady_clock> wait_input(void);
         void draw_entity(Entity *entActive);
         void clear_entity(Entity *entActive);
 

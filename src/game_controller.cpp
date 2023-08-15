@@ -1,5 +1,7 @@
 // C++ standard headers
 #include <iostream>
+#include <thread>
+#include <chrono>
 // Local headers
 #include <game_controller.hpp>
 #include <entity_manager.hpp>
@@ -34,11 +36,13 @@ void GameController::cleanup(void) {
 }
 
 void GameController::play_round(void) {
-    this->screen->wait_input();
+    auto startTime = this->screen->wait_input();
     this->screen->clear_entity(entMan->get_current_entity());
     this->entMan->step_down();
     this->screen->draw_entity(entMan->get_current_entity());
 
+
+    std::this_thread::sleep_for((std::chrono::steady_clock::now() - startTime) - std::chrono::milliseconds(TURN_DURATION_MS));
     // this->cleanup();
     // end_with_code(EXIT_SUCCESS);
 }

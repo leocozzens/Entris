@@ -1,19 +1,22 @@
 // C++ standard libraries
-#include <cstddef>
+#include <chrono>
 // External libraries
 #include <ncurses.h>
 // Local headers
 #include <display.hpp>
 #include <entity.hpp>
 
-#define WIN_FAIL "Terminal size too small"
-#define SUCCESS "No error"
+#define WIN_FAIL            "Terminal size too small"
+#define SUCCESS             "No error"
 
-#define BOARD_SCALE 19
-#define WIDTH_FACTOR 1.4
+#define BOARD_SCALE         19
+#define WIDTH_FACTOR        1.4
 #define SET_BORDER(_Window) box((_Window), 0, 0)
 
 #define EMPTY_SPACE " "
+
+#define INPUT_CHECK_RATE    10
+#define INPUT_TIME          (TURN_DURATION_MS - INPUT_CHECK_RATE)
 
 struct _Board {
     WINDOW *win;
@@ -66,8 +69,27 @@ void Display::make_window(size_t maxY, size_t maxX) {
     wrefresh(this->board->win);
 }
 
-void Display::wait_input(void) {
-    wgetch(this->board->win);
+std::chrono::time_point<std::chrono::steady_clock> Display::wait_input(void) {
+    wtimeout(this->board->win, TURN_DURATION_MS);
+    std::chrono::time_point<std::chrono::steady_clock> startTime = std::chrono::steady_clock::now();
+    do {
+        uint16_t input = wgetch(this->board->win);
+        switch(input) {
+            case KEY_UP:
+            case 'w':
+                break;
+            case KEY_DOWN:
+            case 's':
+                break;
+            case KEY_LEFT:
+            case 'a':
+                break;
+            case KEY_RIGHT:
+            case 'd':
+                break;
+        }
+    } while((std::chrono::steady_clock::now() - startTime) < std::chrono::milliseconds(INPUT_TIME));
+    return startTime;
 }
 
 void Display::draw_entity(Entity *entActive) { // TODO: Switch on color identifiers with a default to print the specified char
