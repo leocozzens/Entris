@@ -18,7 +18,7 @@
 #define INPUT_CHECK_RATE    10
 #define INPUT_TIME          (TURN_DURATION_MS - INPUT_CHECK_RATE)
 
-typedef std::chrono::time_point<std::chrono::steady_clock> SteadyClock;
+typedef std::chrono::time_point<std::chrono::steady_clock> SteadyTime;
 
 struct _Board {
     WINDOW *win;
@@ -71,11 +71,11 @@ void Display::make_window(size_t maxY, size_t maxX) {
     wrefresh(this->board->win);
 }
 
-SteadyClock Display::wait_input(void) {
+SteadyTime Display::wait_input(void) {
     wtimeout(this->board->win, TURN_DURATION_MS);
-    SteadyClock startTime = std::chrono::steady_clock::now();
+    SteadyTime startTime = std::chrono::steady_clock::now();
     do {
-        uint16_t input = wgetch(this->board->win);
+        int32_t input = wgetch(this->board->win);
         switch(input) {
             case KEY_UP:
             case 'w':

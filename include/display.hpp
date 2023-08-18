@@ -1,7 +1,7 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
-#define TURN_DURATION_MS 500
+#define TURN_DURATION_MS 200
 
 class EntityManager;
 typedef struct _Board Board;

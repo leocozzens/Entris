@@ -20,9 +20,9 @@ class EntityManager {
         size_t screenCenter;
         Entity *currentEnt;
 
-        static void random_piece(uint16_t &size, char &body, Coord **offSets);
+        static Coord *random_piece(uint16_t &size, char &body);
         void init_entities(void);
-        Entity *make_entity(uint16_t size, char body, Coord **offSets, size_t startY, size_t startX);
+        Entity *make_entity(uint16_t size, char body, Coord *offSets, size_t startY, size_t startX);
 };
 
 #endif
